@@ -13,6 +13,25 @@ exports.headers = headers = {
 exports.serveAssets = function(res, asset) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+  var statusCode = 200;
+  var filePath = path.resolve(__dirname,asset);
+  fs.readFile(filePath,'utf8', function (err, file) {
+    if (err) {
+      console.log('error at home directory: ', err);
+      res.writeHead(404, headers);
+    } else {
+      res.writeHead(statusCode, headers);
+    }
+    res.end(file);
+  });
 };
 
-// As you progress, keep thinking about what helper functions you can put here!
+exports.addUrl = function(res, sitePath) {
+  console.log('sitePath: ',sitePath);
+  if(archive.addUrlToList(sitePath.split('=')[1])){
+    var statusCode = 302;
+    res.writeHead(statusCode,headers);
+    res.end();
+  }
+};
+
