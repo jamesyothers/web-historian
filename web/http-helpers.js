@@ -13,6 +13,7 @@ exports.headers = headers = {
 exports.serveAssets = serveAssets = function(res, asset, type) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+
   var statusCode = 200;
   var filePath = path.resolve(__dirname,asset);
   headers['Content-Type'] = type;
@@ -23,6 +24,7 @@ exports.serveAssets = serveAssets = function(res, asset, type) {
     } else {
       res.writeHead(statusCode, headers);
     }
+    console.log('response sended');
     res.end(file);
   });
 };
@@ -35,9 +37,17 @@ exports.addUrl = function(res, sitePath) {
       var statusCode = 302;
       res.setHeader('Location', 'http://127.0.0.1:8080/loading.html');
       res.writeHead(statusCode, headers);
+      console.log('ended when adding');
       res.end();
     } else {
-      serveAssets(res,'../archives/sites/' + sitePath, 'text/html');
+      archive.isURLArchived(sitePath, function(isArchived) {
+        console.log('archived callback');
+        if (isArchived) {
+          serveAssets(res,'../archives/sites/' + sitePath, 'text/html');
+        } else {
+          serveAssets(res,'./public/loading.html', 'text/html');
+        }
+      });
     }
   });
 };

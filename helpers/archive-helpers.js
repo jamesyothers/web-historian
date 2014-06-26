@@ -51,15 +51,21 @@ exports.addUrlToList = addUrlToList = function(url,callback){
         console.log('Error when adding to the list');
       });
       callback(true);
+    }else{
+      callback(false);
     }
-    callback(false);
   });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url, callback){
+  fs.readdir('../archives/sites', function(err,files) {
+    if (err) {
+      console.log('error in isURLArchived: ', err);
+    }
+    callback(files.indexOf(url) !== -1);
+  });
 
 };
 
 exports.downloadUrls = function(){
-
 };
