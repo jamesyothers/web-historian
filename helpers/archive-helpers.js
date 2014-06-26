@@ -30,30 +30,36 @@ exports.readListOfUrls = readListOfUrls = function(callback){
     if (err) {
       console.log('error on reading sites.txt: ', err);
     }
+    console.log('read data ', data);
     callback(data.split('\n'));
   });
 };
 
-exports.isUrlInList = isUrlInList = function(url){
+exports.isUrlInList = isUrlInList = function(url,callback){
   readListOfUrls(function(list){
-    return list.indexOf(url) > -1;
+    console.log(list.indexOf(url));
+    callback(list.indexOf(url) !== -1);
   });
 };
 
-exports.addUrlToList = addUrlToList = function(url){
-  if(!isUrlInList(url)){
-    fs.appendFile(paths.list, url + "\n", function(err){
-      if(err) throw err;
-      console.log('Error when adding to the list');
-    });
-    debugger;
-    return true;
-  }
-  return false;
+exports.addUrlToList = addUrlToList = function(url,callback){
+
+  isUrlInList(url, function(urlExists) {
+    if(!urlExists){
+      fs.appendFile(paths.list, url + "\n", function(err){
+        if(err) throw err;
+        console.log('Error when adding to the list');
+      });
+      callback(true);
+    }
+    callback(false);
+  });
 };
 
 exports.isURLArchived = function(){
+
 };
 
 exports.downloadUrls = function(){
+
 };

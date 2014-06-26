@@ -10,11 +10,12 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset) {
+exports.serveAssets = serveAssets = function(res, asset, type) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
   var statusCode = 200;
   var filePath = path.resolve(__dirname,asset);
+  headers['Content-Type'] = type;
   fs.readFile(filePath,'utf8', function (err, file) {
     if (err) {
       console.log('error at home directory: ', err);
@@ -28,10 +29,16 @@ exports.serveAssets = function(res, asset) {
 
 exports.addUrl = function(res, sitePath) {
   console.log('sitePath: ',sitePath);
-  if(archive.addUrlToList(sitePath.split('=')[1])){
-    var statusCode = 302;
-    res.writeHead(statusCode,headers);
-    res.end();
-  }
+  var sitePath = sitePath.split('=')[1];
+  archive.addUrlToList(sitePath, function(wasAdded){
+    if(wasAdded){
+      var statusCode = 302;
+      res.setHeader('Location', 'http://127.0.0.1:8080/loading.html');
+      res.writeHead(statusCode, headers);
+      res.end();
+    } else {
+      serveAssets(res,'../archives/sites/' + sitePath, 'text/html');
+    }
+  });
 };
 
