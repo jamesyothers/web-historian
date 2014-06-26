@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var request = require('request');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -30,20 +31,21 @@ exports.readListOfUrls = readListOfUrls = function(callback){
     if (err) {
       console.log('error on reading sites.txt: ', err);
     }
-    console.log('read data ', data);
+    //console.log('read data ', data);
     callback(data.split('\n'));
   });
 };
 
 exports.isUrlInList = isUrlInList = function(url,callback){
   readListOfUrls(function(list){
-    console.log(list.indexOf(url));
+    // console.log(list.indexOf(url));
+    console.log('list: ',list);
+    console.log('url: ',url);
     callback(list.indexOf(url) !== -1);
   });
 };
 
 exports.addUrlToList = addUrlToList = function(url,callback){
-
   isUrlInList(url, function(urlExists) {
     if(!urlExists){
       fs.appendFile(paths.list, url + "\n", function(err){
@@ -57,7 +59,7 @@ exports.addUrlToList = addUrlToList = function(url,callback){
   });
 };
 
-exports.isURLArchived = function(url, callback){
+exports.isURLArchived = isURLArchived = function(url, callback){
   fs.readdir('../archives/sites', function(err,files) {
     if (err) {
       console.log('error in isURLArchived: ', err);
@@ -68,4 +70,24 @@ exports.isURLArchived = function(url, callback){
 };
 
 exports.downloadUrls = function(){
+  fs.readdir('../archives/sites', function(err,archivedFiles) {
+    if (err) {
+      console.log('error in downloadUrls: ', err);
+    } else {
+      readListOfUrls(function(siteFiles){
+        siteFiles.pop();
+        console.log('site files, line76: ', siteFiles);
+        if (siteFiles.length !== archivedFiles.length) {
+          for (var i=0; i < siteFiles.length; i++) {
+            if (archivedFiles.indexOf(siteFiles[i]) === -1) {
+              var siteFile = fs.createWriteStream('../archives/sites/'+siteFiles[i]);
+              console.log('siteFile: ', siteFile);
+              console.log('siteFiles: ', siteFiles);
+              request('http://' + siteFiles[i]).pipe(siteFile);
+            }
+          }
+        }
+      });
+    }
+  });
 };

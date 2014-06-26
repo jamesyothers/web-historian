@@ -1,7 +1,5 @@
 www.google.com
-www.yahoo.com
+www.youtube.com
+www.yotube.com
+www.facebook.com
 www.cnn.com
-www.hotmail.com
-www.book.com
-www.new.com
-www.mexico.com

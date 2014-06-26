@@ -46,6 +46,8 @@ exports.addUrl = function(res, sitePath) {
           serveAssets(res,'../archives/sites/' + sitePath, 'text/html');
         } else {
           serveAssets(res,'./public/loading.html', 'text/html');
+          console.log('run archive.downloadUrls');
+          archive.downloadUrls();
         }
       });
     }
