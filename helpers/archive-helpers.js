@@ -60,7 +60,7 @@ exports.addUrlToList = addUrlToList = function(url,callback){
 };
 
 exports.isURLArchived = isURLArchived = function(url, callback){
-  fs.readdir('../archives/sites', function(err,files) {
+  fs.readdir(path.join(__dirname,'../archives/sites'), function(err,files) {
     if (err) {
       console.log('error in isURLArchived: ', err);
     }
@@ -70,17 +70,17 @@ exports.isURLArchived = isURLArchived = function(url, callback){
 };
 
 exports.downloadUrls = function(){
-  fs.readdir('../archives/sites', function(err,archivedFiles) {
+  fs.readdir(path.join(__dirname,'../archives/sites'), function(err,archivedFiles) {
     if (err) {
       console.log('error in downloadUrls: ', err);
     } else {
       readListOfUrls(function(siteFiles){
         siteFiles.pop();
-        console.log('site files, line76: ', siteFiles);
+        console.log('site files, line76: ', siteFiles, archivedFiles);
         if (siteFiles.length !== archivedFiles.length) {
           for (var i=0; i < siteFiles.length; i++) {
             if (archivedFiles.indexOf(siteFiles[i]) === -1) {
-              var siteFile = fs.createWriteStream('../archives/sites/'+siteFiles[i]);
+              var siteFile = fs.createWriteStream(path.join(__dirname, '../archives/sites/',siteFiles[i]));
               console.log('siteFile: ', siteFile);
               console.log('siteFiles: ', siteFiles);
               request('http://' + siteFiles[i]).pipe(siteFile);
