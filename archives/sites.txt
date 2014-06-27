@@ -1,5 +1,2 @@
 www.google.com
-www.youtube.com
-www.yotube.com
-www.facebook.com
-www.cnn.com
+
