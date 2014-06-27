@@ -30,23 +30,19 @@ exports.serveAssets = serveAssets = function(res, asset, type) {
 };
 
 exports.addUrl = function(res, sitePath) {
-  console.log('sitePath: ',sitePath);
   var sitePath = sitePath.split('=')[1];
   archive.addUrlToList(sitePath, function(wasAdded){
     if(wasAdded){
       var statusCode = 302;
       res.setHeader('Location', 'http://127.0.0.1:8080/loading.html');
       res.writeHead(statusCode, headers);
-      console.log('ended when adding');
       res.end();
     } else {
       archive.isURLArchived(sitePath, function(isArchived) {
-        console.log('archived callback');
         if (isArchived) {
           serveAssets(res,'../archives/sites/' + sitePath, 'text/html');
         } else {
           serveAssets(res,'./public/loading.html', 'text/html');
-          console.log('run archive.downloadUrls');
           archive.downloadUrls();
         }
       });
